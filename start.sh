@@ -51,16 +51,25 @@ echo "   If you need OCR, please upgrade to a larger Railway plan"
 echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
 echo "Installation marker created (OCR disabled)"
 
-# Initialize database if it doesn't exist
-if [ ! -f "./data/petizo.db" ]; then
+# Ensure data directory exists in Volume
+mkdir -p /app/petizo/data/uploads
+echo "Data directory created at: /app/petizo/data"
+
+# Initialize database if it doesn't exist in Volume
+if [ ! -f "/app/petizo/data/petizo.db" ]; then
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "Initializing database..."
+  echo "Initializing database in Volume..."
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   node scripts/setup/init-database.js
-  echo "Database initialized successfully"
+  if [ $? -eq 0 ]; then
+    echo "✓ Database initialized successfully"
+  else
+    echo "✗ Database initialization failed!"
+    exit 1
+  fi
 else
-  echo "Database already exists, skipping initialization"
+  echo "✓ Database already exists in Volume, skipping initialization"
 fi
 
 # Start the Node.js server
