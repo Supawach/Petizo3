@@ -4,7 +4,7 @@
   "description": "Pet Management System",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "sh start.sh",
     "dev": "nodemon server.js",
     "init-db": "node scripts/setup/init-database.js",
     "build": "node scripts/setup/init-database.js"
