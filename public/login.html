@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - Petizo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            background: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: url('/images/login1.jpg') center/cover;
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 90vw;
+            max-width: 1100px;
+            max-height: 85vh;
+            margin: 0;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Left Side - Image Section */
+        .image-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 40px;
+            color: white;
+            overflow: hidden;
+            border-radius: 24px 0 0 24px;
+            background: transparent;
+        }
+
+        .background-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+
+        .slide-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide-image.active {
+            opacity: 1;
+        }
+
+        .slide-image:nth-child(1) {
+            background-image: url('/images/login_fix1.png');
+        }
+
+        .slide-image:nth-child(2) {
+            background-image: url('/images/login_fix2.png');
+        }
+
+        .slide-image:nth-child(3) {
+            background-image: url('/images/login_fix3.png');
+        }
+
+        /* Removed dark overlay */
+
+        .logo-section {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: auto;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-section:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 14px;
+            opacity: 1;
+            line-height: 1.6;
+            max-width: 400px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-dots {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 32px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Right Side - Form Section */
+        .form-section {
+            background: white;
+            padding: 60px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 0 24px 24px 0;
+        }
+
+        .form-content {
+            max-width: 100%;
+        }
+
+        .form-content h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #6c757d;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .password-toggle:hover {
+            color: #00d4ff;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password {
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #00bdeb;
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .signup-link {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .terms-text {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        .terms-text a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background: #fff1f0;
+            color: #cf1322;
+            border: 1px solid #ffccc7;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-section {
+                padding: 50px 35px;
+            }
+
+            .image-section {
+                padding: 50px 35px;
+            }
+
+            .hero-content h1 {
+                font-size: 38px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                border-radius: 16px;
+            }
+
+            .image-section {
+                display: none;
+            }
+
+            .form-section {
+                padding: 40px 20px;
+                border-radius: 16px;
+            }
+
+            .mobile-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 32px;
+            }
+
+            .mobile-logo-icon {
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                border-radius: 50%;
+                padding: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-logo-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                filter: brightness(0) invert(1);
+            }
+
+            .mobile-logo-text {
+                font-size: 26px;
+                font-weight: 800;
+                background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .form-content h2 {
+                font-size: 24px;
+                text-align: center;
+            }
+
+            .form-subtitle {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-section {
+                padding: 24px 20px;
+            }
+
+            .form-content h2 {
+                font-size: 22px;
+            }
+
+            .hero-content h1 {
+                font-size: 32px;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+
+        .mobile-logo {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side - Image Section -->
+        <div class="image-section">
+            <div class="background-slider">
+                <div class="slide-image active"></div>
+                <div class="slide-image"></div>
+                <div class="slide-image"></div>
+            </div>
+
+            <a href="index.html" class="logo-section">
+                <div class="logo-icon">
+                    <img src="/icon/logo.png" alt="Petizo">
+                </div>
+                <div class="logo-text">Petizo</div>
+            </a>
+
+
+            <div class="feature-dots">
+                <div class="dot active" onclick="changeSlide(0)"></div>
+                <div class="dot" onclick="changeSlide(1)"></div>
+                <div class="dot" onclick="changeSlide(2)"></div>
+            </div>
+        </div>
+
+        <!-- Right Side - Form Section -->
+        <div class="form-section">
+            <!-- Mobile Logo -->
+            <div class="mobile-logo">
+                <div class="mobile-logo-icon">
+                    <img src="/icon/logo.png" alt="Petizo">
+                </div>
+                <div class="mobile-logo-text">Petizo</div>
+            </div>
+
+            <div class="form-content">
+                <h2>ยินดีต้อนรับกลับสู่ Petizo!</h2>
+                <p class="form-subtitle">เข้าสู่ระบบบัญชีของคุณ</p>
+
+                <div class="message error-message" id="loginError"></div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>อีเมล</label>
+                        <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>รหัสผ่าน</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="loginPassword" required placeholder="••••••••">
+                            <span class="password-toggle" onclick="togglePassword()">👁</span>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+                </form>
+
+                <div class="signup-link">
+                    ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+                </div>
+
+                <div class="terms-text">
+                    การดำเนินการต่อแสดงว่าคุณยอมรับ<br>
+                    <a href="terms.html">ข้อกำหนดในการให้บริการ</a> ของ <strong>Petizo</strong> และ <a href="terms.html">นโยบายความเป็นส่วนตัว</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script>
+        const API_URL = CONFIG.API_URL;
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('loginPassword');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+        }
+
+        // Show message
+        function showMessage(id, text) {
+            const element = document.getElementById(id);
+            element.textContent = text;
+            element.style.display = 'block';
+        }
+
+        // Hide message
+        function hideMessage(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Handle Login
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Save token and user info
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    // Clear form before redirect
+                    document.getElementById('loginForm').reset();
+
+                    // Redirect based on role
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    showMessage('loginError', data.error || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('loginError', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+            }
+        }
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+
+            if (token && user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }
+
+            // Clear form fields on page load (especially after logout or successful login)
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.reset();
+                // Also clear any autofilled values
+                setTimeout(() => {
+                    const emailInput = document.getElementById('loginEmail');
+                    const passwordInput = document.getElementById('loginPassword');
+                    if (emailInput) emailInput.value = '';
+                    if (passwordInput) passwordInput.value = '';
+                }, 50);
+            }
+        });
+
+        // Carousel slideshow
+        const dots = document.querySelectorAll('.dot');
+        const slides = document.querySelectorAll('.slide-image');
+        let currentSlide = 0;
+        let slideInterval;
+
+        function changeSlide(index) {
+            // Remove active class from current slide and dot
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+
+            // Set new current slide
+            currentSlide = index;
+
+            // Add active class to new slide and dot
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+
+            // Reset interval
+            clearInterval(slideInterval);
+            startSlideshow();
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            changeSlide(next);
+        }
+
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 6000);
+        }
+
+        // Start the slideshow
+        startSlideshow();
+    </script>
+        </script>

@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petizo</title>
+
+    <!--  Preload Critical Resources -->
+    <link rel="preload" href="/css/navbar.css" as="style">
+    <link rel="preload" href="/js/navbar.js" as="script">
+    <link rel="preload" href="/icon/logo.png" as="image">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/chat-popup.css">
+
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .hero {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .hero-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            background: #f8f9fa;
+        }
+
+        .features {
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .features-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .features-subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .feature-desc {
+            font-size: 15px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        /* Blog Section */
+        .blog-section {
+            padding: 60px 40px;
+            background: white;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin: 0;
+        }
+
+        .view-all-btn {
+            background: #06b6d4;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .view-all-btn:hover {
+            background: #00e5ff;
+            transform: translateY(-2px);
+        }
+
+        .blog-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Chatbot Button */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+            transition: all 0.3s ease;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ซ่อน chatbot-btn เดิม เพราะเราใช้ chat popup แทน */
+        .chatbot-btn {
+            display: none !important;
+        }
+
+        .chatbot-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.6);
+        }
+
+        .chatbot-btn:active {
+            transform: scale(0.95);
+        }
+
+        .chatbot-btn img {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Feature Card Images */
+        .feature-card img {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                height: 450px;
+            }
+
+            .features {
+                padding: 40px 20px;
+            }
+
+            .features-header {
+                margin-bottom: 35px;
+            }
+
+            .features-title {
+                font-size: 28px;
+            }
+
+            .features-subtitle {
+                font-size: 15px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .feature-card {
+                padding: 20px 16px;
+            }
+
+            .feature-card img {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 12px;
+            }
+
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+                margin-bottom: 12px;
+            }
+
+            .feature-title {
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+
+            .feature-desc {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .blog-section {
+                padding: 40px 20px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .chatbot-btn {
+                width: 56px;
+                height: 56px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .chatbot-btn img {
+                width: 26px !important;
+                height: 26px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                height: 350px;
+            }
+
+            .features {
+                padding: 30px 15px;
+            }
+
+            .features-header {
+                margin-bottom: 30px;
+            }
+
+            .features-title {
+                font-size: 24px;
+            }
+
+            .features-subtitle {
+                font-size: 14px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .feature-card {
+                padding: 20px 16px;
+            }
+
+            .feature-card img {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 16px;
+            }
+
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+
+            .feature-title {
+                font-size: 17px;
+                margin-bottom: 10px;
+            }
+
+            .feature-desc {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .blog-section {
+                padding: 30px 15px;
+            }
+
+            .section-header {
+                padding: 0 15px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .blog-title {
+                font-size: 18px;
+            }
+
+            .blog-excerpt {
+                font-size: 14px;
+            }
+
+            .blog-meta {
+                font-size: 12px;
+            }
+
+            .chatbot-btn {
+                width: 54px;
+                height: 54px;
+                bottom: 16px;
+                right: 16px;
+            }
+
+            .chatbot-btn img {
+                width: 24px !important;
+                height: 24px !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <section class="hero">
+        <div class="hero-slider">
+            <div class="hero-slide active">
+                <img src="/images/hero1.png" alt="Hero 1" class="hero-image">
+            </div>
+            <div class="hero-slide">
+                <img src="/images/hero2.png" alt="Hero 2" class="hero-image">
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-header">
+            <h2 class="features-title">คุณสมบัติเด่นของ Petizo</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <img src="/icon/like.png" alt="Blog">
+                <h3 class="feature-title">Pet Health Knowledge Base</h3>
+                <p class="feature-desc">เข้าถึงบทความและคำแนะนำเกี่ยวกับการดูแลสุขภาพสัตว์เลี้ยงอย่างครบครัน</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="/icon/bot-assistant.png" alt="Chatbot">
+                <h3 class="feature-title">Smart Chatbot</h3>
+                <p class="feature-desc">ระบบแชทบอทอัจฉริยะให้คำแนะนำและตอบคำถามเกี่ยวกับการดูแลสัตว์เลี้ยง</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="/icon/dog.png" alt="Pet Profile">
+                <h3 class="feature-title">Pet Profile Management</h3>
+                <p class="feature-desc">จัดการข้อมูลและประวัติสุขภาพสัตว์เลี้ยงของคุณได้อย่างเป็นระบบ</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="/icon/vaccination.png" alt="Vaccine">
+                <h3 class="feature-title">Digital Vaccine Record</h3>
+                <p class="feature-desc">บันทึกและติดตามประวัติการฉีดวัคซีนสัตว์เลี้ยงของคุณแบบดิจิทัล</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="/icon/Scan documents.png" alt="OCR">
+                <h3 class="feature-title">ระบบ OCR</h3>
+                <p class="feature-desc">สแกนและแปลงฉลากวัคซีนเป็นข้อมูลดิจิทัลอัตโนมัติ ประหยัดเวลาในการบันทึก</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="/icon/alarm.png" alt="Notification">
+                <h3 class="feature-title">Smart Notification System</h3>
+                <p class="feature-desc">แจ้งเตือนอัตโนมัติเมื่อถึงกำหนดฉีดวัคซีนหรือนัดหมายสัตวแพทย์</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="section-header">
+            <h2 class="section-title">Latest BLOGS</h2>
+            <a href="blog.html" class="view-all-btn">ดูทั้งหมด</a>
+        </div>
+
+        <div class="blog-grid" id="blogGrid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #999;">
+                กำลังโหลดบทความ
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/chat-popup.js"></script>
+
+    <!-- Hero Slideshow Script -->
+    <script>
+        // Hero slideshow functionality
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const totalSlides = slides.length;
+
+        function showNextSlide() {
+            // Remove active class from current slide
+            slides[currentSlideIndex].classList.remove('active');
+
+            // Move to next slide (loop back to 0 if at the end)
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+
+            // Add active class to new slide
+            slides[currentSlideIndex].classList.add('active');
+        }
+
+        // Change slide every 5 seconds (5000 milliseconds)
+        // Change slide every 8 seconds (8000 milliseconds)
+        setInterval(showNextSlide, 8000);
+    </script>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/profile-dropdown.js"></script>
+    <script src="/js/auth-common.js"></script>
+
+    <script>
+        const API_URL = window.CONFIG ? window.CONFIG.API_URL : (window.location.origin + '/api');
+
+        // Notification Modal Functions
+        function toggleNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.toggle('show');
+        }
+
+        function closeModalOnBackdrop(event) {
+            if (event.target.id === 'notificationModal') {
+                toggleNotificationModal();
+            }
+        }
+
+        async function loadNotifications() {
+            console.log('Loading notifications...');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('No token, skipping notifications');
+                return;
+            }
+
+            try {
+                const petsResponse = await fetch(`${API_URL}/pets`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!petsResponse.ok) {
+                    console.log('Failed to fetch pets');
+                    updateBadge(0);
+                    return;
+                }
+                
+                const pets = await petsResponse.json();
+                console.log('Pets loaded:', pets.length);
+
+                if (!pets || pets.length === 0) {
+                    displayEmptyState();
+                    return;
+                }
+
+                const schedulesResponse = await fetch(`${API_URL}/vaccine-schedules`);
+                const schedules = await schedulesResponse.json();
+                console.log('Schedules loaded:', schedules.length);
+
+                let allNotifications = [];
+
+                for (const pet of pets) {
+                    const historyResponse = await fetch(`${API_URL}/pets/${pet.id}/vaccination-history`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (!historyResponse.ok) continue;
+                    const vaccinations = await historyResponse.json();
+
+                    // Check overdue/due soon vaccines
+                    for (const vaccination of vaccinations) {
+                        if (vaccination.next_due_date) {
+                            const daysLeft = daysUntil(vaccination.next_due_date);
+                            
+                            if (daysLeft < 0) {
+                                allNotifications.push({
+                                    type: 'urgent',
+                                    petName: pet.name,
+                                    petId: pet.id,
+                                    vaccineName: vaccination.vaccine_name,
+                                    message: `วัคซีนเลยกำหนดฉีดแล้ว ${Math.abs(daysLeft)} วัน`,
+                                    dueDate: vaccination.next_due_date,
+                                    daysLeft: daysLeft,
+                                    icon: '<img src="/icon/alert.png" alt="Urgent" style="width:30px;height:30px;">'
+                                });
+                            } else if (daysLeft <= 30) {
+                                allNotifications.push({
+                                    type: 'warning',
+                                    petName: pet.name,
+                                    petId: pet.id,
+                                    vaccineName: vaccination.vaccine_name,
+                                    message: `ใกล้ถึงกำหนดฉีดวัคซีนในอีก ${daysLeft} วัน`,
+                                    dueDate: vaccination.next_due_date,
+                                    daysLeft: daysLeft,
+                                    icon: '<img src="/icon/warning.png" alt="Warning" style="width:30px;height:30px;">'
+                                });
+                            }
+                        }
+                    }
+
+                    // Check recommended vaccines by age
+                    if (pet.birth_date) {
+                        const ageInWeeks = calculateAgeInWeeks(pet.birth_date);
+                        
+                        for (const schedule of schedules) {
+                            if (ageInWeeks >= schedule.age_weeks_min && 
+                                (!schedule.age_weeks_max || ageInWeeks <= schedule.age_weeks_max)) {
+                                
+                                const hasVaccine = vaccinations.some(v => 
+                                    v.vaccine_name === schedule.vaccine_name
+                                );
+
+                                if (!hasVaccine) {
+                                    allNotifications.push({
+                                        type: 'info',
+                                        petName: pet.name,
+                                        petId: pet.id,
+                                        vaccineName: schedule.vaccine_name,
+                                        message: `แนะนำให้ฉีดวัคซีนตามอายุ (${ageInWeeks} สัปดาห์)`,
+                                        dueDate: null,
+                                        daysLeft: 0,
+                                        icon: '<img src="/icon/syringe.png" alt="Suggest Vaccine" style="width:30px;height:30px;">'
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                allNotifications.sort((a, b) => {
+                    const urgencyOrder = { 'urgent': 0, 'warning': 1, 'info': 2 };
+                    if (urgencyOrder[a.type] !== urgencyOrder[b.type]) {
+                        return urgencyOrder[a.type] - urgencyOrder[b.type];
+                    }
+                    return a.daysLeft - b.daysLeft;
+                });
+
+                console.log('Total notifications:', allNotifications.length);
+                displayNotifications(allNotifications);
+                updateBadge(allNotifications.length);
+
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                updateBadge(0);
+            }
+        }
+
+        function displayNotifications(notifications) {
+            const container = document.getElementById('notificationList');
+            
+            if (notifications.length === 0) {
+                displayEmptyState();
+                return;
+            }
+
+            container.innerHTML = notifications.map(notif => `
+                <div class="notification-item ${notif.type}" onclick="window.location.href='pet-details.html?id=${notif.petId}'">
+                    <div class="notification-top">
+                        <img src="/icon/syringe.png" alt="Vaccine" style="width:24px;height:24px;">
+                        <div class="notification-details">
+                            <div class="pet-name">${notif.petName}</div>
+                            <div class="vaccine-name">${notif.vaccineName}</div>
+                            <div class="notification-message">${notif.message}</div>
+                            ${notif.dueDate ? `
+                                <span class="notification-date">
+                                    <img src="/icon/calendar (2).png" alt="Date" style="width:14px;height:14px;"> กำหนดฉีด: ${formatThaiDate(notif.dueDate)}
+                                </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayEmptyState() {
+            document.getElementById('notificationList').innerHTML = `
+                <div class="empty-notifications">
+                    <img src="/icon/alarm.png" alt="Notification" style="width:64px;height:64px;opacity:0.3;">
+                    <div class="empty-text">ไม่มีการแจ้งเตือน</div>
+                </div>
+            `;
+            updateBadge(0);
+        }
+
+        function updateBadge(count) {
+            const badge = document.getElementById('notificationBadge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        function calculateAgeInWeeks(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            const diffTime = Math.abs(today - birth);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.floor(diffDays / 7);
+        }
+
+        function daysUntil(dateString) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const targetDate = new Date(dateString);
+            targetDate.setHours(0, 0, 0, 0);
+            const diffTime = targetDate - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function formatThaiDate(dateString) {
+            const date = new Date(dateString);
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 
+                              'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
+        }
+
+        // Navigation functions
+        function handleYourPetClick(event) {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('กรุณาเข้าสู่ระบบก่อนเพื่อเข้าถึงหน้า Your Pet');
+                goToLogin();
+            } else {
+                window.location.href = 'your-pet.html';
+            }
+        }
+
+        // Load latest blog posts
+        async function loadLatestBlogs() {
+            try {
+                const response = await fetch(`${API_URL}/blog`);
+                const blogs = await response.json();
+                
+                const blogGrid = document.getElementById('blogGrid');
+                
+                if (blogs && blogs.length > 0) {
+                    blogGrid.innerHTML = blogs.slice(0, 6).map(blog => {
+                        // Parse tags
+                        let tags = [];
+                        try {
+                            if (Array.isArray(blog.tags)) tags = blog.tags;
+                            else if (blog.tags) tags = JSON.parse(blog.tags);
+                        } catch {
+                            tags = String(blog.tags || '').split(/[,;]/).map(t => t.trim()).filter(Boolean);
+                        }
+                        const tagsHtml = tags.length ? tags.map(t => `<span class="tag">${t}</span>`).join('') : '<span class="tag">ทั่วไป</span>';
+
+                        // Category (หมวดหมู่)
+                        const category = blog.category || 'ทั่วไป';
+                        const categoryHtml = `<span class=\"category-box\">หมวดหมู่ ${category}</span>`;
+
+                        const publishDate = new Date(blog.published_at || blog.created_at || Date.now());
+                        const formattedDate = publishDate.toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
+                        const views = blog.views || 0;
+                        const excerpt = blog.excerpt || (blog.content ? blog.content.substring(0, 120) + '...' : '');
+                        const imageHtml = blog.featured_image
+                            ? `<img src="${blog.featured_image}" alt="${blog.title}">`
+                            : '<img src="/icon/stray-cat.png" alt="Default Image">';
+
+                        // ใช้ slug สำหรับการเชื่อมลิงก์
+                        const identifier = blog.slug || blog.id;
+
+                        return `
+                        <div class="blog-card">
+                            <div class="blog-image">${imageHtml}</div>
+                            <div class="blog-content">
+                                <h3 class="blog-title">${blog.title}</h3>
+                                <div class="blog-excerpt">${excerpt}</div>
+                                <div class="blog-meta">
+                                    <div class="blog-tags">${categoryHtml} ${tagsHtml}</div>
+                                </div>
+                            </div>
+                            <div class="blog-footer">
+                                <div class="meta-left">
+                                    <img src="/icon/view.png" alt="views">
+                                    <span>${views}</span>
+                                    <span style="margin-left:12px;" class="date-badge">
+                                        <img src="/icon/calendar (2).png" alt="date" style="vertical-align:middle;width:16px;height:16px;">
+                                        ${formattedDate}
+                                    </span>
+                                </div>
+                                <div>
+                                    <button class="read-btn" onclick="window.location.href='blog-detail.html?id=${encodeURIComponent(identifier)}'">อ่านเพิ่มเติม</button>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                } else {
+                    blogGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #999;">ยังไม่มีบทความ</div>';
+                }
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                document.getElementById('blogGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #999;">ไม่สามารถโหลดบทความได้</div>';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus();
+            loadLatestBlogs();
+            const yourPetLink = document.getElementById('yourPetLink');
+            if (yourPetLink) {
+                yourPetLink.addEventListener('click', handleYourPetClick);
+            }
+        });
+
+        // Refresh notifications every 5 minutes
+        setInterval(() => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                loadNotifications();
+            }
+        }, 5 * 60 * 1000);
+    </script>
+
+
+    <style>
+        .blog-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0px 15px 40px rgba(130, 96, 255, 0.12);
+            transition: all 0.25s;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 18px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-excerpt {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 10px;
+        }
+
+        .blog-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .blog-footer .meta-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .blog-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-label {
+            font-weight: 600;
+            color: #a6a6a6;
+            margin-right: 2px;
+        }
+
+        .category-box {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .blog-meta img {
+            width: 16px;
+            height: 16px;
+        }
+
+        .read-btn {
+            background: #06b6d4;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .read-btn:hover {
+            background: #00e5ff;
+        }
+
+        .blog-footer .meta-left img {
+            width: 18px;
+            height: 18px;
+            opacity: 0.8;
+        }
+
+        /* Responsive Blog Cards */
+        @media (max-width: 768px) {
+            .blog-image {
+                height: 180px;
+            }
+
+            .blog-content {
+                padding: 20px;
+            }
+
+            .blog-title {
+                font-size: 18px;
+            }
+
+            .blog-excerpt {
+                font-size: 14px;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .blog-image {
+                height: 160px;
+            }
+
+            .blog-content {
+                padding: 16px;
+            }
+
+            .blog-category {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+
+            .blog-title {
+                font-size: 17px;
+                margin-bottom: 10px;
+            }
+
+            .blog-excerpt {
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+
+            .blog-meta {
+                font-size: 12px;
+            }
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            padding: 60px 0 0;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #00bcd4, #00e5ff);
+            border-radius: 2px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column ul li a,
+        .footer-column p {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-column ul li a:hover {
+            color: #00bcd4;
+            transform: translateX(5px);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* ...existing code... */
+    </style>
+
+
+        <script src="/js/vaccine-notification.js"></script>
+        <script src="/js/profile-dropdown.js"></script>
+        <script src="/js/footer.js"></script>
+
+    </body>
+    </html>
+</body>
+<!-- Minimal Website Footer Component -->
+<style>
+    .site-footer {
+        background: #fff;
+        color: #222;
+        padding: 32px 0 18px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        margin-top: 60px;
+    }
+    .footer-divider {
+        border: none;
+        border-top: 1.5px solid #e0e0e0;
+        margin: 0 0 24px 0;
+    }
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 18px;
+    }
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+    .social-icon:hover {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.08);
+    }
+    .social-icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+    .footer-logo {
+        text-align: center;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .footer-logo img {
+        height: 38px;
+        width: auto;
+    }
+    .footer-logo-text {
+        font-size: 22px;
+        font-weight: 400;
+        color: #222;
+        font-family: 'Georgia', serif;
+    }
+    .footer-bottom {
+        background: transparent;
+        padding: 10px 0 0;
+        text-align: center;
+        border-top: none;
+    }
+    .footer-copyright {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 6px;
+        font-weight: 300;
+    }
+    .footer-links {
+        color: #666;
+        font-size: 13px;
+        font-weight: 300;
+    }
+    .footer-links a {
+        color: #00bcd4;
+        text-decoration: none;
+        margin: 0 8px;
+        transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+        color: #0096c7;
+    }
+    @media (max-width: 768px) {
+        .site-footer {
+            padding: 24px 0 12px;
+            margin-top: 40px;
+        }
+        .footer-logo img {
+            height: 30px;
+        }
+        .footer-logo-text {
+            font-size: 18px;
+        }
+        .social-icon img {
+            width: 26px;
+            height: 26px;
+        }
+    }
+    @media (max-width: 480px) {
+        .footer-social {
+            gap: 16px;
+        }
+        .footer-logo {
+            gap: 6px;
+        }
+        .footer-logo img {
+            height: 22px;
+        }
+        .footer-logo-text {
+            font-size: 15px;
+        }
+        .footer-copyright {
+            font-size: 12px;
+        }
+        .footer-links {
+            font-size: 11px;
+        }
+    }
+</style>
+<footer class="site-footer">
+    <hr class="footer-divider">
+    <div class="footer-social">
+        <a href="https://www.youtube.com/watch?feature=shared&v=7E6By8A8ulw" class="social-icon" title="YouTube">
+            <img src="/icon/youtube.png" alt="YouTube">
+        </a>
+    </div>
+    <div class="footer-logo">
+        <img src="/icon/logo.png" alt="Petizo Logo">
+        <span class="footer-logo-text">Petizo</span>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copyright">
+            Copyright © 2025 Petizo
+        </div>
+        <div class="footer-links">
+            <a href="terms.html">Information legal</a> |
+            <a href="#">Privacy &amp; Cookie Policy</a>
+        </div>
+    </div>
+</footer>
+</html>

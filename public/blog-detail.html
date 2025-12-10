@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บทความ - Petizo</title>
+
+    <link rel="preload" href="/js/navbar.js" as="script">
+    <link rel="preload" href="/icon/logo.png" as="image">
+    <link rel="stylesheet" href="/css/navbar.css">
+
+    <style id="article-improved-ui">
+        :root{
+            --primary: #00bcd4;
+            --muted: #6b7280;
+            --card-bg: #fff;
+            --surface: #f8fafc;
+        }
+
+        body { background: var(--surface); font-family: 'Inter','Kanit',sans-serif; color:#0f172a; }
+        .article-container { max-width: 980px; margin: 28px auto; padding: 0 20px 60px; box-sizing: border-box; }
+
+        .breadcrumb {
+            padding: 20px 40px;
+            background: white;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #00bcd4;
+            text-decoration: none;
+        }
+
+        .breadcrumbs { color: var(--muted); font-size:13px; margin-bottom:12px; }
+
+        .article-header { margin-bottom: 18px; }
+        .article-title { font-size: 30px; line-height:1.2; margin: 6px 0 10px; font-weight:800; color:#0b1220; }
+
+        .article-meta { display:flex; gap:12px; align-items:center; color:var(--muted); font-size:13px; flex-wrap:wrap; }
+        .meta-item { display:flex; gap:6px; align-items:center; padding:6px 10px; background:#fff; border-radius:999px; box-shadow:0 4px 12px rgba(2,6,23,0.04); font-weight:600; }
+
+        .article-tags { display:flex; gap:8px; flex-wrap:wrap; }
+        .article-tags .tag {
+            background:#eef6f7;
+            color:var(--primary);
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .article-featured {
+            margin:16px 0;
+            border-radius:12px;
+            overflow:hidden;
+            background:#fff;
+            box-shadow:0 8px 30px rgba(2,6,23,0.04);
+        }
+        .article-featured img { width:100%; height:600px; object-fit:cover; display:block; }
+
+        .article-content {
+            margin-top:18px;
+            font-size:16px;
+            line-height:1.9;
+            color:#111827;
+            background:#fff;
+            padding:32px;
+            border-radius:12px;
+            box-shadow:0 8px 30px rgba(2,6,23,0.03);
+            white-space: pre-line;
+            word-wrap: break-word;
+        }
+
+        /* Typography improvements */
+        .article-content p {
+            margin-bottom: 1.5em;
+            text-align: justify;
+            text-indent: 0;
+        }
+
+        .article-content p:first-of-type {
+            text-indent: 0;
+            margin-top: 0;
+        }
+
+        .article-content h1,
+        .article-content h2,
+        .article-content h3 {
+            margin-top: 2em;
+            margin-bottom: 1em;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #1a1a1a;
+        }
+
+        .article-content h1 { font-size: 28px; }
+        .article-content h2 { font-size: 24px; }
+        .article-content h3 { font-size: 20px; }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 1.5em 0;
+            padding-left: 2em;
+        }
+
+        .article-content li {
+            margin-bottom: 0.8em;
+            line-height: 1.8;
+        }
+
+        .article-content strong,
+        .article-content b {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .article-content em,
+        .article-content i {
+            font-style: italic;
+        }
+
+        .article-content blockquote {
+            margin: 2em 0;
+            padding: 1.5em 1.5em 1.5em 2em;
+            border-left: 4px solid #00bcd4;
+            background: #f0f7f9;
+            border-radius: 8px;
+            font-style: italic;
+            color: #2c3e50;
+        }
+
+        .article-content code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .article-content pre {
+            background: #1a1a1a;
+            color: #f5f7fa;
+            padding: 1.5em;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5em 0;
+        }
+
+        .article-content pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .article-content a {
+            color: #00bcd4;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .article-content a:hover {
+            border-bottom-color: #00bcd4;
+        }
+
+        .article-content hr {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 3em 0;
+        }
+
+        .article-content img { 
+            width:100%; 
+            border-radius:8px; 
+            margin:2em 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .references a { display:inline-block; max-width: 72ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+        .ref-copy-btn { margin-left:8px; } 
+
+        .related-grid {
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:16px;
+            margin-top:14px;
+        }
+        .related-card {
+            background:#fff;
+            border-radius:10px;
+            overflow:hidden;
+            box-shadow:0 8px 24px rgba(2,6,23,0.05);
+            cursor:pointer;
+        }
+        .related-card img { width:100%; height:120px; object-fit:cover; }
+        .related-card .rc-body { padding:10px; font-size:14px; font-weight:700; color:#0b1220; }
+
+        @media (max-width:1100px){
+        .related-grid { grid-template-columns:repeat(2,1fr); }
+        .article-featured img { height:360px; }
+        }
+
+        @media (max-width:720px){
+        .related-grid { grid-template-columns:1fr; }
+        .article-featured img { height:240px; }
+        .article-title { font-size:22px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <script src="/js/config.js" defer></script>
+    <script src="/js/navbar.js"></script>
+
+    <script src="/js/profile-dropdown.js" defer></script>
+    <script src="/js/vaccine-notification.js" defer></script>
+    <script src="/js/auth-common.js" defer></script>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> >> <a href="blog.html">Blog</a> >> <span id="articleTitle">...</span>
+    </div>
+    <div id="articleContainer" class="article-container">
+        <div class="loading">กำลังโหลดบทความ</div>
+    </div>
+
+    <script>
+        window.CONFIG = window.CONFIG || { API_URL: (location.origin + '/api') };
+
+        function getIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            let ident = params.get('id') || params.get('id') || '';
+            ident = String(ident || '').trim();
+            ident = ident.replace(/^[-\s]+/, '');
+            return ident;
+        }
+
+        async function loadArticle() {
+            const id = getIdFromURL();
+            console.log('Resolved article id/ident =', id);
+            if (!id) {
+                document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>ไม่พบบทความ</h2><p>ไม่พบ id ใน URL</p></div>';
+                return;
+            }
+
+            // safe API base
+            const API_BASE = (window.CONFIG && window.CONFIG.API_URL) ? String(window.CONFIG.API_URL).replace(/\/$/, '') : (location.origin + '/api');
+            const endpointSingle = `${API_BASE}/blog/${encodeURIComponent(id)}`;
+            const endpointList = `${API_BASE}/blog`;
+
+            console.log('Trying to fetch article from (single) ', endpointSingle);
+
+            try {
+                let res = await fetch(endpointSingle);
+                if (res.ok) {
+                    const article = await res.json();
+                    displayArticle(article);
+
+                    // เพิ่มยอดคนดู - ใช้ slug ถ้ามี ไม่งั้นใช้ id
+                    incrementViewCount(article.slug || id);
+                    return;
+                }
+
+                console.warn('Single endpoint failed, trying list endpoint:', res.status);
+                res = await fetch(endpointList);
+                if (!res.ok) {
+                    const body = await res.text().catch(()=>'');
+                    console.error('Fetch failed list', res.status, body);
+                    document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>ไม่สามารถโหลดบทความได้</h2><p>ข้อผิดพลาดจากเซิร์ฟเวอร์: ' + res.status + '</p></div>';
+                    return;
+                }
+
+                const list = await res.json();
+                let article = null;
+                for (const it of (list || [])) {
+                    if (!it) continue;
+                    if (String(it.id) === String(id)) { article = it; break; }
+                    if (it.id && String(it.id) === String(id)) { article = it; break; }
+                    if (it.title && String(it.title).toLowerCase().replace(/\s+/g,'-').indexOf(String(id).toLowerCase()) !== -1) { article = it; break; }
+                }
+
+                if (!article) {
+                    document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>บทความไม่พบ</h2><p>ไม่พบบทความที่ตรงกับ id/slug ที่ส่งมา</p></div>';
+                    return;
+                }
+
+                displayArticle(article);
+
+                // เพิ่มยอดคนดู - ใช้ slug ถ้ามี ไม่งั้นใช้ id
+                incrementViewCount(article.slug || article.id || id);
+
+            } catch (err) {
+                console.error('Network error loading article:', err);
+                document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>ไม่สามารถเชื่อมต่อเพื่อโหลดบทความได้</h2><p>โปรดลองอีกครั้ง</p></div>';
+            }
+        }
+
+        // ฟังก์ชันเพิ่มยอดคนดู
+        async function incrementViewCount(identifier) {
+            const API_BASE = (window.CONFIG && window.CONFIG.API_URL) ? String(window.CONFIG.API_URL).replace(/\/$/, '') : (location.origin + '/api');
+            try {
+                await fetch(`${API_BASE}/blog/${encodeURIComponent(identifier)}/view`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('View count incremented for:', identifier);
+            } catch (err) {
+                console.log('Failed to increment view count:', err);
+            }
+        }
+
+        function displayArticle(article) {
+            const titleEl = document.getElementById('articleTitle');
+            if (titleEl && article && article.title) {
+                titleEl.textContent = article.title;
+            }
+
+            if (!article) {
+                document.getElementById('articleContainer').innerHTML = '<p>ไม่พบบทความ</p>';
+                return;
+            }
+
+            const title = article.title || '';
+            const image = article.featured_image || '/icon/stray-cat.png';
+            const content = article.content || article.excerpt || '';
+            const date = new Date(article.published_at || article.created_at || Date.now())
+                .toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
+            const views = article.views || 0;
+
+            // tags 
+            let tags = [];
+            try {
+                if (Array.isArray(article.tags)) tags = article.tags;
+                else if (article.tags) {
+                    const parsed = JSON.parse(String(article.tags));
+                    if (Array.isArray(parsed)) tags = parsed;
+                    else tags = String(article.tags).split(/[,;]/);
+                }
+            } catch {
+                tags = String(article.tags || "").split(/[,;]/).map(t=>t.trim()).filter(Boolean);
+            }
+            const tagsHtml = tags.map(t => `<span class="tag">${t}</span>`).join(' ');
+
+            // references
+            let references = [];
+            try {
+                if (Array.isArray(article.source)) references = article.source;
+                else if (article.source) {
+                    const parsed = JSON.parse(String(article.source));
+                    if (Array.isArray(parsed)) references = parsed;
+                    else references = String(article.source).split(/[,;]/);
+                }
+            } catch {
+                references = String(article.source || "").split(/[,;]/).map(t=>t.trim()).filter(Boolean);
+            }
+            
+            // Function to shorten URL display
+            function shortenUrl(url) {
+                try {
+                    const urlObj = new URL(url);
+                    let display = urlObj.hostname.replace('www.', '');
+                    if (urlObj.pathname !== '/' && urlObj.pathname !== '') {
+                        display += urlObj.pathname.substring(0, 20) + (urlObj.pathname.length > 20 ? '...' : '');
+                    }
+                    return display;
+                } catch {
+                    // If not a valid URL, return truncated text
+                    return url.length > 50 ? url.substring(0, 50) + '...' : url;
+                }
+            }
+            
+            const refsHtml = references.length
+                ? references.map((r,i)=> {
+                    const isUrl = r.match(/^https?:\/\//i);
+                    if (isUrl) {
+                        return `<li><strong>[${i+1}]</strong> <a href="${r}" target="_blank" rel="noopener noreferrer" title="${r}">${shortenUrl(r)}</a></li>`;
+                    } else {
+                        return `<li><strong>[${i+1}]</strong> ${r}</li>`;
+                    }
+                }).join('')
+                : '<li>ไม่มีการอ้างอิง</li>';
+
+            const html = `
+                <header class="article-header">
+                    <h1 class="article-title">${title}</h1>
+                    <div class="article-meta">
+                        <div class="meta-item"><img src="/icon/calendar (2).png" width="16" alt=""> ${date}</div>
+                        <div class="meta-item"><img src="/icon/view.png" width="16" alt=""> ${views}</div>
+                        <div class="article-tags">${tagsHtml}</div>
+                    </div>
+                </header>
+
+                <div class="article-featured">
+                    <img src="${image}" alt="${title}">
+                </div>
+
+                <article class="article-content">
+                    ${content}
+                </article>
+
+                <section class="references">
+                    <h3>อ้างอิง</h3>
+                    <ul>${refsHtml}</ul>
+                </section>
+            `;
+
+            const container = document.getElementById('articleContainer');
+            if (container) container.innerHTML = html;
+
+            // update small breadcrumb span if present
+            const bread = document.getElementById('articleTitleBread') || document.getElementById('articleTitle');
+            if (bread) {
+                const max = 80;
+                const t = title || '';
+                bread.textContent = (t.length > max) ? t.slice(0, max) + '...' : t;
+            }
+        }
+
+        function checkLoginStatus(){ /* noop if not present */ }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try { if (typeof checkLoginStatus === 'function') checkLoginStatus(); } catch(e){}
+            loadArticle();
+        });
+    </script>
+
+</body>
+<!-- Minimal Website Footer Component -->
+<style>
+    .site-footer {
+        background: #fff;
+        color: #222;
+        padding: 32px 0 18px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        margin-top: 60px;
+    }
+    .footer-divider {
+        border: none;
+        border-top: 1.5px solid #e0e0e0;
+        margin: 0 0 24px 0;
+    }
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 18px;
+    }
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+    .social-icon:hover {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.08);
+    }
+    .social-icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+    .footer-logo {
+        text-align: center;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .footer-logo img {
+        height: 38px;
+        width: auto;
+    }
+    .footer-logo-text {
+        font-size: 22px;
+        font-weight: 400;
+        color: #222;
+        font-family: 'Georgia', serif;
+    }
+    .footer-bottom {
+        background: transparent;
+        padding: 10px 0 0;
+        text-align: center;
+        border-top: none;
+    }
+    .footer-copyright {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 6px;
+        font-weight: 300;
+    }
+    .footer-links {
+        color: #666;
+        font-size: 13px;
+        font-weight: 300;
+    }
+    .footer-links a {
+        color: #00bcd4;
+        text-decoration: none;
+        margin: 0 8px;
+        transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+        color: #0096c7;
+    }
+    @media (max-width: 768px) {
+        .site-footer {
+            padding: 24px 0 12px;
+            margin-top: 40px;
+        }
+        .footer-logo img {
+            height: 30px;
+        }
+        .footer-logo-text {
+            font-size: 18px;
+        }
+        .social-icon img {
+            width: 26px;
+            height: 26px;
+        }
+    }
+    @media (max-width: 480px) {
+        .footer-social {
+            gap: 16px;
+        }
+        .footer-logo {
+            gap: 6px;
+        }
+        .footer-logo img {
+            height: 22px;
+        }
+        .footer-logo-text {
+            font-size: 15px;
+        }
+        .footer-copyright {
+            font-size: 12px;
+        }
+        .footer-links {
+            font-size: 11px;
+        }
+    }
+</style>
+<footer class="site-footer">
+    <hr class="footer-divider">
+    <div class="footer-social">
+        <a href="https://www.youtube.com/watch?feature=shared&v=7E6By8A8ulw" class="social-icon" title="YouTube">
+            <img src="/icon/youtube.png" alt="YouTube">
+        </a>
+    </div>
+    <div class="footer-logo">
+        <img src="/icon/logo.png" alt="Petizo Logo">
+        <span class="footer-logo-text">Petizo</span>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copyright">
+            Copyright © 2025 Petizo
+        </div>
+        <div class="footer-links">
+            <a href="terms.html">Information legal</a> |
+            <a href="#">Privacy &amp; Cookie Policy</a>
+        </div>
+    </div>
+</footer>
+</html>
