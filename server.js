@@ -53,6 +53,20 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use('/uploads', express.static('data/uploads'));
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        database: DB_STRUCTURE 
+    });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Database Connection
 const fs = require('fs');
 const dataDir = './data';
