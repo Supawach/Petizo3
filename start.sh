@@ -51,6 +51,18 @@ echo "   If you need OCR, please upgrade to a larger Railway plan"
 echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
 echo "Installation marker created (OCR disabled)"
 
+# Initialize database if it doesn't exist
+if [ ! -f "./data/petizo.db" ]; then
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "Initializing database..."
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  node scripts/setup/init-database.js
+  echo "Database initialized successfully"
+else
+  echo "Database already exists, skipping initialization"
+fi
+
 # Start the Node.js server
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
