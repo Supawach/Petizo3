@@ -11,6 +11,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
 
+// Log environment info for debugging
+console.log('\n🔍 Environment Info:');
+console.log('   PORT from env:', process.env.PORT);
+console.log('   PORT used:', PORT);
+console.log('   NODE_ENV:', process.env.NODE_ENV);
+console.log('   JWT_SECRET exists:', !!process.env.JWT_SECRET);
+
 // OpenRouter AI Configuration
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
@@ -1882,14 +1889,25 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
     console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(' Petizo Server (Backward Compatible)');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(` URL: http://0.0.0.0:${PORT}`);
-    console.log(` DB Structure: ${DB_STRUCTURE.toUpperCase()}`);
-    console.log('\n Login:');
-    console.log('Admin: admin@petizo.com / admin123');
-    console.log('Member: user@petizo.com / user123');
+    console.log(` 🚀 Server listening on: http://0.0.0.0:${PORT}`);
+    console.log(` 📊 DB Structure: ${DB_STRUCTURE.toUpperCase()}`);
+    console.log(` ✅ Health check: http://0.0.0.0:${PORT}/health`);
+    console.log('\n 👤 Login:');
+    console.log('   Admin: admin@petizo.com / admin123');
+    console.log('   Member: user@petizo.com / user123');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    console.log('✅ Server is ready to accept connections');
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, closing server gracefully...');
+    server.close(() => {
+        console.log('Server closed');
+        process.exit(0);
+    });
 });
