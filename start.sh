@@ -46,36 +46,31 @@ export TMPDIR="/app/petizo/data/tmp"
 mkdir -p "$TMPDIR" || echo "Warning: Could not create tmp directory"
 
 # Mark as installed (OCR disabled, no packages to install)
-echo "Skipping OCR package installation (OCR features disabled due to disk space constraints)"
-echo "   If you need OCR, please upgrade to a larger Railway plan"
+echo "Skipping OCR package installation"
 echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
-echo "Installation marker created (OCR disabled)"
 
 # Ensure data directory exists in Volume
 mkdir -p /app/petizo/data/uploads
-echo "Data directory created at: /app/petizo/data"
 
-# Initialize database if it doesn't exist in Volume
-if [ ! -f "/app/petizo/data/petizo.db" ]; then
-  echo ""
+# Initialize database ONCE if it doesn't exist in Volume
+DB_FILE="/app/petizo/data/petizo.db"
+if [ ! -f "$DB_FILE" ]; then
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "Initializing database in Volume..."
+  echo "🔨 Creating database for the first time..."
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  node scripts/setup/init-database.js
-  if [ $? -eq 0 ]; then
-    echo "✓ Database initialized successfully"
+  node scripts/setup/init-database.js >/dev/null 2>&1
+  if [ -f "$DB_FILE" ]; then
+    echo "✅ Database created successfully"
   else
-    echo "✗ Database initialization failed!"
+    echo "❌ Database creation failed!"
     exit 1
   fi
 else
-  echo "✓ Database already exists in Volume, skipping initialization"
+  echo "✅ Database exists ($(du -h $DB_FILE | cut -f1)), skipping initialization"
 fi
 
-# Start the Node.js server
-echo ""
+# Start the Node.js server immediately
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Starting Node.js server (without OCR support)..."
-echo "Note: OCR features (/api/scan-vaccine) will return errors"
+echo "🚀 Starting Petizo Server..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 exec node server.js
