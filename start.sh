@@ -52,22 +52,10 @@ echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
 # Ensure data directory exists in Volume
 mkdir -p /app/petizo/data/uploads
 
-# Initialize database ONCE if it doesn't exist in Volume
-DB_FILE="/app/petizo/data/petizo.db"
-if [ ! -f "$DB_FILE" ]; then
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "🔨 Creating database for the first time..."
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  node scripts/setup/init-database.js >/dev/null 2>&1
-  if [ -f "$DB_FILE" ]; then
-    echo "✅ Database created successfully"
-  else
-    echo "❌ Database creation failed!"
-    exit 1
-  fi
-else
-  echo "✅ Database exists ($(du -h $DB_FILE | cut -f1)), skipping initialization"
-fi
+# Database will be auto-created by server on first run
+# Just ensure the data directory exists
+echo "✅ Data directory ready: /app/petizo/data"
+echo "   (Database will be auto-created on first connection)"
 
 # Start the Node.js server immediately
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -91,15 +91,34 @@ const db = new sqlite3.Database('./data/petizo.db', (err) => {
     }
 });
 
-// ตรวจสอบโครงสร้าง database
+// ตรวจสอบโครงสร้าง database และสร้าง tables ถ้ายังไม่มี
 function detectDbStructure() {
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='admins'", (err, row) => {
         if (row) {
             DB_STRUCTURE = 'new';
             console.log(' Database Structure: NEW (admins + members)');
         } else {
-            DB_STRUCTURE = 'old';
-            console.log(' Database Structure: OLD (users table)');
+            // ตรวจสอบว่ามี table อะไรบ้าง
+            db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
+                if (!tables || tables.length === 0) {
+                    // Database ว่างเปล่า - รัน init script
+                    console.log(' Database is empty, initializing...');
+                    const { exec } = require('child_process');
+                    exec('node scripts/setup/init-database.js', (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(' Database init error:', error);
+                            console.log(' Will use OLD structure as fallback');
+                            DB_STRUCTURE = 'old';
+                        } else {
+                            console.log(' Database initialized successfully');
+                            DB_STRUCTURE = 'new';
+                        }
+                    });
+                } else {
+                    DB_STRUCTURE = 'old';
+                    console.log(' Database Structure: OLD (users table)');
+                }
+            });
         }
 
         // เพิ่ม column views ในตาราง blogs ถ้ายังไม่มี (ทำงานเบื้องหลังไม่ block)
